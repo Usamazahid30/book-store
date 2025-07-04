@@ -22,6 +22,7 @@ const navigation = [
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const cartItems = useSelector((state) => state.cart.cartItems);
+  const wishlistItems = useSelector((state) => state.wishlist.items);
 
   const { currentUser, logout } = useAuth();
 
@@ -107,9 +108,14 @@ const Navbar = () => {
             )}
           </div>
 
-          <button className="hidden sm:block">
+          <Link to="/wishlist" className="relative hidden sm:block">
             <HiOutlineHeart className="size-6" />
-          </button>
+            {wishlistItems.length > 0 && (
+              <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full px-1">
+                {wishlistItems.length}
+              </span>
+            )}
+          </Link>
 
           <Link
             to="/cart"

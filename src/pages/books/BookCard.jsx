@@ -1,18 +1,32 @@
 import { FiShoppingCart } from "react-icons/fi";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { getImgUrl } from "../../utils/getImgUrl";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../redux/features/cart/cartSlice";
+import { addToWishlist, removeFromWishlist } from "../../redux/features/wishlist/wishlistSlice";
 
 const BookCard = ({ book }) => {
   const dispatch = useDispatch();
+  const wishlistItems = useSelector((state) => state.wishlist.items);
+  const isWishlisted = wishlistItems.some((item) => item._id === book._id);
+
   const handleAddToCart = (product) => {
     dispatch(addToCart(product));
   };
+
+  const handleWishlistToggle = () => {
+    if (isWishlisted) {
+      dispatch(removeFromWishlist(book._id));
+    } else {
+      dispatch(addToWishlist(book));
+    }
+  };
+
   return (
     <div className=" rounded-lg transition-shadow duration-300">
       <div className="flex flex-col sm:flex-row sm:items-center sm:h-72  sm:justify-center gap-4">
-        <div className="sm:h-72 sm:flex-shrink-0 border rounded-md">
+        <div className="sm:h-72 sm:flex-shrink-0 border rounded-md relative">
           <Link to={`/books/${book?._id}`}>
             <img
               src={`${getImgUrl(book?.coverImage)}`}
@@ -20,6 +34,13 @@ const BookCard = ({ book }) => {
               className="w-full bg-cover p-2 rounded-md cursor-pointer hover:scale-105 transition-all duration-200"
             />
           </Link>
+          <button
+            onClick={handleWishlistToggle}
+            className="absolute top-2 right-2 text-2xl text-red-500 bg-white rounded-full p-1 shadow hover:scale-110 transition"
+            aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          >
+            {isWishlisted ? <AiFillHeart /> : <AiOutlineHeart />}
+          </button>
         </div>
 
         <div>
